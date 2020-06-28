@@ -14,10 +14,16 @@ A highly customizable alert dialog controller that mimics Snapchat's alert dialo
 ## Installation
 
 
-### Cocoa Pods:
+### CocoaPods:
 
-```bash
+```ruby
 pod 'AZDialogView'
+```
+
+### Carthage:
+
+```ruby
+github "Minitour/AZDialogViewController"
 ```
 
 ### Manual:
@@ -28,20 +34,51 @@ Simply drag and drop the ```Sources``` folder to your project.
 
 Create an instance of AZDialogViewController:
 ```swift
+//init with optional parameters
 let dialog = AZDialogViewController(title: "Antonio Zaitoun", message: "minitour")
 ```
 
 #### Customize:
 ```swift
+//set the title color
+dialog.titleColor = .black
+
+//set the message color
+dialog.messageColor = .black
+
+//set the dialog background color
+dialog.alertBackgroundColor = .white
+
+//set the gesture dismiss direction
 dialog.dismissDirection = .bottom
 
+//allow dismiss by touching the background
 dialog.dismissWithOutsideTouch = true
 
+//show seperator under the title
 dialog.showSeparator = false
 
+//set the seperator color
 dialog.separatorColor = UIColor.blue
 
+//enable/disable drag
 dialog.allowDragGesture = false
+
+//enable rubber (bounce) effect
+dialog.rubberEnabled = true
+
+//set dialog image
+dialog.image = UIImage(named: "icon")
+
+//enable/disable backgroud blur
+dialog.blurBackground = true
+
+//set the background blur style
+dialog.blurEffectStyle = .dark
+
+//set the dialog offset (from center)
+dialog.contentOffset = self.view.frame.height / 2.0 - dialog.estimatedHeight / 2.0 - 16.0
+
 ```
 
 #### Add Actions:
@@ -102,7 +139,26 @@ dialog.show(in: self)
 self.present(dialog, animated: false, completion: nil)
 ```
 
+**Show with completion**
+```swift
+dialog.show(in: self) { dialog in
+    // show and then change the offset
+    dialog.contentOffset = self.view.frame.height / 2.0 - dialog.estimatedHeight / 2.0 + 15
+}
+```
+
 ## Design
+
+#### Change Dialog Width
+
+This has been a requested feature and so I decided to add it. You can change the width of the dialog frame as a ratio in respect to the width of the main view. This can only be doing using the initalizer and the width cannot be modified afterwards.
+
+```swift
+let dialog = AZDialogViewController(title: "Switch Account", message: "My Message", widthRatio: 1.0)
+```
+This will display a dialog which has the same width as the the controller it is presented in.
+
+The default value is `0.75`
 
 #### Customize Action Buttons Style:
 ```swift
@@ -112,6 +168,14 @@ dialog.buttonStyle = { (button,height,position) in
      button.setTitleColor(self.primaryColor, for: .normal)
      button.layer.masksToBounds = true
      button.layer.borderColor = self.primaryColor.cgColor
+}
+```
+
+#### Use custom UIButton sub-class:
+```swift
+dialog.buttonInit = { index in
+    //set a custom button only for the first index
+    return index == 0 ? HighlightableButton() : nil
 }
 ```
 
